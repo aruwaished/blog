@@ -7,6 +7,7 @@ from urllib.parse import quote
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import Q
 
 
 def random(request):
@@ -132,6 +133,7 @@ def post_list(request):
     return render(request, "list.html", context)
 
 def post_detail(request, post_slug):
+    liked = False
     today=timezone.now().date()
     item = get_object_or_404(Post, slug=post_slug)
     if not request.user.is_staff:
