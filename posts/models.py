@@ -2,13 +2,17 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.db.models.signals import pre_save
 from django.template.defaultfilters import slugify
+from django.contrib.auth.models import User
 
 class Post(models.Model):
 	title = models.CharField(max_length=120)
+	author = models.ForeignKey(User, default=1)
 	slug = models.SlugField(unique=True)
 	content = models.TextField()
 	created = models.DateTimeField(auto_now_add=True)
 	img = models.ImageField(null=True, blank=True, upload_to="post_images")
+	draft = models.BooleanField(default=False)
+	publish_date = models.DateField()
 
 	def __str__(self):
 		return self.title
@@ -38,3 +42,9 @@ def pre_save_post_function(*args, **kwargs):
 		instance.slug = create_slug(instance)
 
 pre_save.connect(pre_save_post_function, sender=Post)
+
+class Like(models.Model):
+	user = models.ForeignKey(User)
+	post = models.ForeignKey(Post)
+	timestamp = models.DateTimeField(auto_now_add=True)
+    

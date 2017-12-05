@@ -4,13 +4,46 @@
 {% endblock heading %}
 
 {% block content %}
+	<li><a href="https://twitter.com/home?status=I'm%%20to%20learn%20to%20Co20goingde...%20Come%20build%20an%20web%20apsp%20with%20me!%20@DarthHamza%20http://joincoded.com/">
+Share on Twitter
+</a></li>
+	
+
 	<ul>
 		<li>{{item.title}}</li>
 		<li>{{item.content}}</li>
 		<li>{{item.id}}</li>
 		{% if item.img %}
+		<div class="btn btn-secondary" onclick="ajax_like()">
+			<span id="likes_count">{{like_count}}</span>
+			<span ><i id="heart" class="fa fa-heart  {% if liked %}text-danger{% endif %}" aria-hidden="true"></i></span>
+			</div> 
 			<li><img src="{{item.img.url}}" alt=""></li>			
 		{% endif %}
+		<i class="fa fa-heart" aria-hidden="true"></i>
 
-	</ul>
+	{% include "comments.html" %}
+	<script>
+	function ajax_like()
+	{
+		$.ajax({
+			type:'GET',
+			url: '{% url "more:like_button" post_id=item.id %}',
+			error:function (){
+				console.log("omg what did you do?!");
+			},
+			success:function(data){
+				$("#likes_count").text(data.likes_count);
+				if (data.action==="like"){
+					$("#heart").addClass("text-danger");
+				}
+				else {
+					$("#heart").removeClass("text-danger");
+				}
+			},
+
+			});
+	}
+</script>
+
 {% endblock content %}

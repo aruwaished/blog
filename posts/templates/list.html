@@ -9,7 +9,10 @@
 		<h1 class="display-3">These are my posts!</h1>
 			<a class="btn btn-primary btn-lg" href="{% url 'more:create' %}" role="button">Create</a>
 			<br><br>
-			<button type="button" class="btn btn-success btn-lg btn-block" data-toggle="popover" title="IMPORTANT MESSAGE!!!" data-content="If you're reading this right now you should know that I'm really bored and you're a noob! :)">Click Me!</button>
+			<form class="form-group" action="{% url 'more:list' %}" method="GET">
+				<input type="text" name="q" placeholder="Search..." value="{{request.GET.q}}">
+				<input class="btn btn-primary" type="submit" value ="Search">
+			</form>
 		</p>
 	</div>
 	
@@ -20,11 +23,23 @@
 				<img class="card-img-top" src="{{item.img.url}}" alt="Card image cap">
 			{% endif %}
 			<div class="card-body">
-				<h4 class="card-title">{{item.title}} <small>{{item.created|timesince}}</small></h4>
+				<h4 class="card-title">{{item.title}} <small>{{item.publish_date|timesince}}</small>
+				{% if item.draft %}
+					<span class="text-danger">Draft</span>
+				{% endif %}
+				{% if item.publish_date > today %}
+					<span class="text-success">Fututre Post</span>
+					{% endif %}
+				</h4>
 				<p class="card-text">{{item.content|linebreaks|truncatechars:30}}</p>
+				<p class= "card-text">{{item.author.username}}</p>
+				<p class= "card-text">{{item.author.get_fullname}}</p>
+				<p class= "card-text">{{item.author.last_login}} </p>
+				<p class= "card-text">{{item.author.date_joined}} </p>
 				<a href="{% url 'more:detail' post_slug=item.slug %}" class="btn btn-info">Read More...</a>
 				<a href="{% url 'more:update' post_slug=item.slug %}" class="btn btn-warning">Update</a>
-				<a href="{% url 'more:delete' post_slug=item.slug %}" class="btn btn-danger">Delete</a>
+				<a href="{% url 'more:delete' post_slug=item.slug %}" class="btn btn-danger">Delete <i class="fa fa-trash-o" aria-hidden="true"></i>
+</a>
 
 			</div>
 		</div>

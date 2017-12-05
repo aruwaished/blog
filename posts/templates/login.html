@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}
+log in
+{% endblock title %}
+
+
+{% block content %}
+    <form action="{% url 'more:login' %}" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input class = "btn btn-primary" type="submit" value="login">
+    
+    <a href="{% url 'github_login' %}" class="btn btn-dark">
+    	<i class="fa fa-github_login" aria-hidden="true"></i> Login Using Github
+    </a>
+
+    <a href="{% url 'twitter_login' %}" class="btn btn-info"
+    	<i class="fa fa-twitter" aria-hidden="true"></i> Login Using Twitter
+    </a>
+    </form>
+
+   {% endblock %}

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
+import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'fc#hn&7^mc_ot4qifxbyq)1#a2jqh2(w8sua1*6g#(az#=3n5j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ '139.59.118.63', '127.0.0.1']
 
 
 # Application definition
@@ -38,7 +38,67 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'posts',
+    'crispy_forms',
+    'django.contrib.sites',
+    'django_comments',
+    'googly',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.twitter',
+    'gitty',
+    'tiwtty',
+    'api',
+    'rest_framework',
 ]
+
+
+
+
+AUTHENTICATION_BACKENDS = (
+    
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+    
+)
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+            'gist',
+        ],
+    }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+JWT_AUTH = {
+    
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=43200),
+
+
+}
+
+
+CRISPY_TEMPLATE_PACK="bootstrap4"
+SITE_ID=1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -74,10 +134,21 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.sqlite3'.'postreql_psycopg2',
+        'NAME': 'django',
+        'USER': 'django',
+        'PASSWORD': 'de4beae3fb0851da6a8d293f524febcf',
+        'HOST: localhost', 
+        'PORT': '', 
     }
 }
 
@@ -101,6 +172,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 3,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -123,3 +202,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+LOGIN_REDIRECT_URL = "/posts/list"
